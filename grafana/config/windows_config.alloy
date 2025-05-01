@@ -1,0 +1,38 @@
+logging {
+  level = "info"
+}
+
+prometheus.remote_write "default" {
+  endpoint {
+    url = "http://10.0.0.1:9090/api/v1/write"
+  }
+  external_labels = {
+    hostname = "iamd",
+  }
+}
+
+prometheus.exporter.windows "windows" { }
+
+prometheus.scrape "windows" {
+  targets    = prometheus.exporter.windows.windows.targets
+  forward_to = [prometheus.remote_write.default.receiver]
+  scrape_interval = "10s"
+}
+
+prometheus.scrape "nvidia" {
+  targets = [{
+    __address__ = "127.0.0.1:9835",
+  }]
+
+  forward_to = [prometheus.remote_write.default.receiver]
+  scrape_interval = "10s"
+}
+
+prometheus.scrape "OhmGraphite" {
+  targets = [{
+    __address__ = "127.0.0.1:4445",
+  }]
+
+  forward_to = [prometheus.remote_write.default.receiver]
+  scrape_interval = "10s"
+}
