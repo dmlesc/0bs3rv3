@@ -30,7 +30,7 @@
 
       prometheus.remote_write "default" {
         endpoint {
-          url = "http://10.0.0.1:9090/api/v1/write"
+          url = "http://127.0.0.1:9090/api/v1/write"
         }
         external_labels = {
           hostname = "iamd",
